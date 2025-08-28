@@ -1,0 +1,52 @@
+"use client";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import SubmitButton from '@/components/ui/submitButton';
+import { signUp } from '@/lib/actions/auth.actions';
+import React from 'react';
+import { useActionState } from 'react';
+
+export default function signupForm() {
+
+    const [state, action] = useActionState(signUp, undefined)
+
+    return (
+        <form action={action}>
+            <div className="flex flex-col gap-2">
+                {state?.message && <p className='text-sm text-red-500'>{state.message}</p>}
+                <div>
+                    <Label htmlFor="name">Name</Label>
+                    <Input id="name" name="name" placeholder="John Doe" />
+                </div>
+                {state?.error?.name && (
+                    <p className="text-sm text-red-500">{state.error.name}</p>
+                )}
+                <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" placeholder="John@gmail.com" />
+                </div>
+                {state?.error?.email && (
+                    <p className="text-sm text-red-500">{state.error.email}</p>
+                )}
+                <div>
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" name="password" placeholder="8 characters minimum..." />
+                </div>
+                {state?.error?.password && (
+                    <div>
+                        <p>Password must:</p>
+                        <ul>
+                            {state.error.password.map(err => (
+                                <li
+                                    className='text-xs text-red-500'
+                                    key={err}
+                                >{err}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <SubmitButton>Sign Up</SubmitButton>
+            </div>
+        </form>
+    )
+}
