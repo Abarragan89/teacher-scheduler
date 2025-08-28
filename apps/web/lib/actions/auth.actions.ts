@@ -3,6 +3,7 @@ import { z } from "zod";
 import { FormState, LoginFormSchema, SignupFormSchema } from "../types";
 import { BACKEND_URL } from "../constants";
 import { redirect } from "next/navigation";
+import { createSession } from "./session";
 
 export async function signUp(
     state: FormState,
@@ -80,8 +81,15 @@ export async function signIn(
     // If request successfully passed Guards, Local strategy, etc, then return
     if (response.ok) {
         const result = await response.json();
-        // Create The Session for Authenticated User
-        console.log({ result });
+
+        // Create The Session for Authenticated User (saves it in http only cookie)
+        await createSession({
+            user: {
+                id: result.id,
+                name: result.name
+            }
+        })
+        redirect('/');
     } else {
         return {
             message: response.status === 401 ? 'Invalid Credentials' : response.statusText
