@@ -87,7 +87,8 @@ export async function signIn(
             user: {
                 id: result.id,
                 name: result.name
-            }
+            },
+            accessToken: result.accessToken
         })
         redirect('/');
     } else {
